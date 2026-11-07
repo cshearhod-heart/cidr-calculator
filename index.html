@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="format-detection" content="telephone=no">
+<!-- home-screen install for the hosted web version; the native apps ignore these -->
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<meta name="apple-mobile-web-app-title" content="CIDR">
+<meta name="theme-color" content="#f2f4f7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#14171a" media="(prefers-color-scheme: dark)">
+<!-- Offline by construction: connect-src 'none' means the app cannot make a
+     network request even if code were added later that tried to. -->
+<meta http-equiv="Content-Security-Policy"
+      content="default-src 'self' 'unsafe-inline' capacitor://localhost https://localhost;
+               connect-src 'none';
+               img-src 'self' data:;
+               object-src 'none';
+               frame-src 'none';
+               base-uri 'none';
+               form-action 'none'">
+<title>CIDR Calculator</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="top">
+  <div class="brand">
+    <span class="mark" aria-hidden="true"></span>
+    <h1>CIDR Calculator</h1>
+  </div>
+  <div class="tabs" role="tablist">
+    <button id="tab-v4" role="tab" aria-selected="true" aria-controls="pane-v4">IPv4</button>
+    <button id="tab-v6" role="tab" aria-selected="false" aria-controls="pane-v6">IPv6</button>
+    <button id="tab-split" role="tab" aria-selected="false" aria-controls="pane-split">Split</button>
+  </div>
+</div>
+
+<main>
+  <!-- ================= IPv4 ================= -->
+  <section id="pane-v4" role="tabpanel">
+    <div class="card">
+      <div class="field">
+        <label for="v4ip">IPv4 Address</label>
+        <input type="text" id="v4ip" value="192.168.1.1" inputmode="decimal"
+               autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+               enterkeyhint="done">
+      </div>
+      <div class="field">
+        <label for="v4bits">Prefix / Netmask</label>
+        <select id="v4bits"></select>
+        <div class="chips" id="v4chips"></div>
+      </div>
+      <div class="error hidden" id="v4err"></div>
+    </div>
+    <!-- the hero figure lives outside #v4out so the result rows stay a pure list -->
+    <div class="card hero hidden" id="v4hero"></div>
+    <div class="card"><div class="rows" id="v4out"></div></div>
+  </section>
+
+  <!-- ================= IPv6 ================= -->
+  <section id="pane-v6" role="tabpanel" class="hidden">
+    <div class="card">
+      <div class="field">
+        <label for="v6ip">IPv6 Address</label>
+        <input type="text" id="v6ip" value="2001:db8:85a3::8a2e:370:7334"
+               autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+               enterkeyhint="done">
+      </div>
+      <div class="field">
+        <label for="v6bits">Prefix Length</label>
+        <select id="v6bits"></select>
+        <div class="chips" id="v6chips"></div>
+      </div>
+      <div class="error hidden" id="v6err"></div>
+    </div>
+    <div class="card hero hidden" id="v6hero"></div>
+    <div class="card"><div class="rows" id="v6out"></div></div>
+  </section>
+
+  <!-- ================= Split ================= -->
+  <section id="pane-split" role="tabpanel" class="hidden">
+    <div class="card">
+      <div class="grid2">
+        <div class="field">
+          <label for="spnet">Network (CIDR)</label>
+          <input type="text" id="spnet" value="192.168.1.0/24" inputmode="text"
+                 autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+                 enterkeyhint="done">
+        </div>
+        <div class="field">
+          <label for="spnew">Split Into</label>
+          <select id="spnew"></select>
+        </div>
+      </div>
+      <div class="error hidden" id="sperr"></div>
+      <div class="note" id="spnote"></div>
+    </div>
+    <div class="card hero hidden" id="sphero"></div>
+    <div class="card"><div id="spout"></div></div>
+  </section>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="cidr.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
